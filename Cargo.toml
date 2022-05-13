@@ -16,9 +16,9 @@ bytes = "*"
 chrono = { version = "*", features = ["serde"] }
 clap = { version = "3", features = ["derive", "env"] }
 futures = "0.3"
-flow_cli_common = {path = "../flow_cli_common"}
-doc = {path = "../doc"}
-json = {path = "../json"}
+flow_cli_common = { git = "https://github.com/estuary/flow", branch = "master" }
+doc = { git = "https://github.com/estuary/flow", branch = "master" }
+json = { git = "https://github.com/estuary/flow", branch = "master" }
 serde = { version = "1", features = ["derive"] }
 serde_json = { version = "1", features = ["raw_value"] }
 serde_yaml = "0.8"
