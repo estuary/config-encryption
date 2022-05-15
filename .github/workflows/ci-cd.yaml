@@ -1,0 +1,47 @@
+name: Estuary Config Encryption CI/CD
+
+# Controls when the action will run. Triggers the workflow on push
+# or pull request events, but only for the primary branch.
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  testAndDeploy:
+    runs-on: ubuntu-latest
+    # Permissions required of the Github token in order for
+    # federated identity and authorization to work.
+    permissions:
+      contents: read
+      id-token: write
+
+    container:
+      image: rust:1-buster
+    steps:
+      - uses: actions/checkout@v3
+      # Deployment steps undertaken on a merge to `main`.
+      # This was generated via `setup-workload-ident.sh` in the ops repo.
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/auth@v0
+        with:
+          service_account: cd-config-encryption@estuary-control.iam.gserviceaccount.com
+          workload_identity_provider: projects/1084703453822/locations/global/workloadIdentityPools/github-actions/providers/github-actions-provider
+
+      - name: Fetch sops binary
+        run: ./fetch-sops.sh
+      - name: Test
+        # test with --release so that we can re-use compilation output in the next step
+        run: 'PATH="$PATH:$(pwd)/sops-bin" cargo test --release'
+      - name: Build
+        run: 'cargo build --release'
+
+      - name: Deploy
+        if: ${{ github.ref_name == 'main' }}
+        run: |
+          gcloud run deploy config-encryption \
+            --project estuary-control \
+            --region us-central1 \
+            --source .
+

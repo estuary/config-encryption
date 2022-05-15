@@ -8,7 +8,7 @@ use tower::ServiceExt;
 
 fn sops_args() -> crate::SopsArgs {
     crate::SopsArgs {
-        gcp_kms: String::from("projects/helpful-kingdom-273219/locations/us-central1/keyRings/dev/cryptoKeys/CI-estuary-flow"),
+        gcp_kms: String::from("projects/estuary-control/locations/us-central1/keyRings/sops/cryptoKeys/cd-github-control"),
         encrypted_suffix: String::from("_sops"),
     }
 }
