@@ -1,4 +1,4 @@
-FROM debian:buster-slim
+FROM debian:bullseye-slim
 
 # expects that fetch-sops.sh has been run to download binaries into sops-bin/
 COPY sops-bin/sops  /usr/bin/
