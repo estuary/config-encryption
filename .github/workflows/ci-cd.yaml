@@ -23,8 +23,10 @@ jobs:
         with:
           toolchain: stable
       - name: Set up Google Cloud SDK
+        id: auth
         uses: google-github-actions/auth@v0
         with:
+          token_format: 'access_token'
           service_account: cd-config-encryption@estuary-control.iam.gserviceaccount.com
           workload_identity_provider: projects/1084703453822/locations/global/workloadIdentityPools/github-actions/providers/github-actions-provider
 
@@ -37,11 +39,26 @@ jobs:
       - name: Build binary
         run: 'cargo build --release'
 
+      - name: Login to GAR
+        if: ${{ github.ref == 'refs/heads/main' }}
+        uses: docker/login-action@v2
+        with:
+          registry: us-central1-docker.pkg.dev
+          username: oauth2accesstoken
+          password: ${{ steps.auth.outputs.access_token }}
+
+      - name: Build and push
+        if: ${{ github.ref == 'refs/heads/main' }}
+        uses: docker/build-push-action@v3
+        with:
+          push: true
+          tags: us-central1-docker.pkg.dev/estuary-control/config-encryption:latest
+
       - name: Deploy
         if: ${{ github.ref == 'refs/heads/main' }}
         run: |
           gcloud run deploy config-encryption \
             --project estuary-control \
             --region us-central1 \
-            --source ./
+            --image us-central1-docker.pkg.dev/estuary-control/config-encryption:latest
 
