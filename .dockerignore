@@ -1,0 +1,4 @@
+# Ignore everything except for the couple of files we care about
+**/*
+!target/release/flow-config-encryption
+!sops-bin/sops

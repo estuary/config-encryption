@@ -51,6 +51,7 @@ jobs:
         if: ${{ github.ref == 'refs/heads/main' }}
         uses: docker/build-push-action@v3
         with:
+          context: ${{ github.workspace }}
           push: true
           tags: us-central1-docker.pkg.dev/estuary-control/config-encryption:latest
 
