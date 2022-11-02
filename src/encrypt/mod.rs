@@ -34,7 +34,7 @@ fn validate(req: EncryptReq) -> Result<ValidPlainConfig, Error> {
     let index = builder.into_index();
 
     let mut validator = Validator::<'_, Annotation, FullContext>::new(&index);
-    validator.prepare(&schema_url)?;
+    validator.prepare(&built_schema.curi)?;
     // Deserialization cannot fail.
     ::json::de::walk(&config.0, &mut validator).unwrap();
 

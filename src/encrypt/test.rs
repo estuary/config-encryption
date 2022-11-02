@@ -14,6 +14,7 @@ fn sops_args() -> crate::SopsArgs {
 }
 
 const SCHEMA: &str = r#"{
+    "$id": "https://example/schema/under/test",
     "type": "object",
     "properties": {
         "not_secret": {"type": "string"},
